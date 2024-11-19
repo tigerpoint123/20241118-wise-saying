@@ -1,7 +1,5 @@
 package org.example;
 
-
-import java.util.ArrayList;
 import java.util.Scanner;
 
 //== 명언 앱 ==
@@ -24,13 +22,24 @@ import java.util.Scanner;
 1 / 작자미상 / 현재를 사랑하라.
 명령) 삭제?id=1
 1번 명언이 삭제되었습니다.
+
+명령) 수정?id=2
+명언(기존) : 과거에 집착하지 마라.
+명언 : 현재와 자신을 사랑하라.
+작가(기존) : 작자미상
+작가 : 홍길동
+명령) 목록
+번호 / 작가 / 명언
+----------------------
+2 / 홍길동 / 현재와 자신을 사랑하라.
 명령) 종료
 * */
 public class Main {
     public static void main(String[] args) {
+        WiseSaying list = new WiseSaying();
+
         System.out.println("== 명언 앱 ==");
         Scanner sc = new Scanner(System.in);
-        ArrayList<String> list = new ArrayList<>();
         int i = 0;
         int num = 1;
 
@@ -41,41 +50,55 @@ public class Main {
             if (order.equals("종료")) {
                 break;
             } else if (order.equals("등록")) {
-                list.add(String.valueOf(num));
+                list.num[i] = num;
 
                 System.out.print("명언 : ");
                 String speech = sc.nextLine();
-                list.add(speech);
+                list.speech[i] = speech;
 
                 System.out.print("작가 : ");
                 String author = sc.nextLine();
-                list.add(author);
+                list.author[i] = author;
 
-                System.out.println(list.get(i) + "번 명언이 등록되었습니다.");
-                i += 3;
+                System.out.println(list.num[i] + "번 명언이 등록되었습니다.");
+                i ++;
                 num++;
             } else if (order.equals("목록")) {
-                for (int j = 0; j < list.size(); j+=3) {
-                    System.out.println(list.get(j) + " / " + list.get(j+1) + " / " + list.get(j+2));
+                for (int j = 0; j < i; j++) {
+                    if(list.num[j] > 0) {
+                        System.out.println(list.num[j] + " / " + list.speech[j] + " / " + list.author[j]);
+                    }
                 }
             } else if (order.equals("삭제")) {
                 System.out.print("id= ");
-                String input = sc.nextLine();
+                int input = sc.nextInt();
 
-                for(int k = 0; k < list.size(); k++) {
-                    if(input.equals(list.get(k))) {
-                        list.remove(k);
-                        list.remove(k+1);
-                        list.remove(k+2);
+                for(int k = 0; k < i; k++) {
+                    if(input==list.num[k]) {
+                        list.num[k] = 0;
+                        list.speech[k] = null;
+                        list.author[k] = null;
                         System.out.println(input + "번 명언이 삭제되었습니다.");
-                        break;
                     } else {
                         System.out.println(input + "번 명언은 존재하지 않습니다.");
                     }
                 }
+            } else if (order.equals("수정")) {
+                System.out.print("id = ");
+                int input = sc.nextInt();
+
+                for (int k = 0; k < i; k++) {
+                    if (list.num[k] == input) {
+                        System.out.println("명언(기존) : " + list.speech[k]);
+                        System.out.print("명언(수정) : ");
+                        list.speech[k] = sc.nextLine();
+                        System.out.println("작가(기존) : " + list.author[k]);
+                        System.out.print("작가(수정) : ");
+                        list.author[k] = sc.nextLine();
+                    }
+                }
             }
-
         }
-
     }
 }
+
