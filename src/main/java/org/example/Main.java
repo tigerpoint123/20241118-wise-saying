@@ -50,55 +50,72 @@ public class Main {
             if (order.equals("종료")) {
                 break;
             } else if (order.equals("등록")) {
-                list.num[i] = num;
-
-                System.out.print("명언 : ");
-                String speech = sc.nextLine();
-                list.speech[i] = speech;
-
-                System.out.print("작가 : ");
-                String author = sc.nextLine();
-                list.author[i] = author;
-
-                System.out.println(list.num[i] + "번 명언이 등록되었습니다.");
+                enroll(list, i, num, sc);
                 i ++;
                 num++;
             } else if (order.equals("목록")) {
-                for (int j = 0; j < i; j++) {
-                    if(list.num[j] > 0) {
-                        System.out.println(list.num[j] + " / " + list.speech[j] + " / " + list.author[j]);
-                    }
-                }
+                showList(list, i);
             } else if (order.equals("삭제")) {
-                System.out.print("id= ");
-                int input = sc.nextInt();
-
-                for(int k = 0; k < i; k++) {
-                    if(input==list.num[k]) {
-                        list.num[k] = 0;
-                        list.speech[k] = null;
-                        list.author[k] = null;
-                        System.out.println(input + "번 명언이 삭제되었습니다.");
-                    } else {
-                        System.out.println(input + "번 명언은 존재하지 않습니다.");
-                    }
-                }
+                delete(list, i, sc);
             } else if (order.equals("수정")) {
-                System.out.print("id = ");
-                int input = sc.nextInt();
-
-                for (int k = 0; k < i; k++) {
-                    if (list.num[k] == input) {
-                        System.out.println("명언(기존) : " + list.speech[k]);
-                        System.out.print("명언(수정) : ");
-                        list.speech[k] = sc.nextLine();
-                        System.out.println("작가(기존) : " + list.author[k]);
-                        System.out.print("작가(수정) : ");
-                        list.author[k] = sc.nextLine();
-                    }
-                }
+                modify(list, i, sc);
             }
         }
     }
+
+    private static void enroll(WiseSaying list, int i, int num, Scanner sc) {
+        list.num[i] = num;
+
+        System.out.print("명언 : ");
+        String speech = sc.nextLine();
+        list.speech[i] = speech;
+
+        System.out.print("작가 : ");
+        String author = sc.nextLine();
+        list.author[i] = author;
+
+        System.out.println(list.num[i] + "번 명언이 등록되었습니다.");
+    }
+
+    public static void showList(WiseSaying list, int i) {
+        for (int j = 0; j < i; j++) {
+            if(list.num[j] > 0) {
+                System.out.println(list.num[j] + " / " + list.speech[j] + " / " + list.author[j]);
+            }
+        }
+    }
+
+    public static void delete(WiseSaying list, int i, Scanner sc) {
+        System.out.print("id= ");
+        int input = sc.nextInt();
+
+        for(int k = 0; k < i; k++) {
+            if(input==list.num[k]) {
+                list.num[k] = 0;
+                list.speech[k] = null;
+                list.author[k] = null;
+                System.out.println(input + "번 명언이 삭제되었습니다.");
+            } else {
+                System.out.println(input + "번 명언은 존재하지 않습니다.");
+            }
+        }
+    }
+
+    public static void modify(WiseSaying list, int i, Scanner sc) {
+        System.out.print("id = ");
+        int input = sc.nextInt();
+
+        for (int k = 0; k < i; k++) {
+            if (list.num[k] == input) {
+                System.out.println("명언(기존) : " + list.speech[k]);
+                System.out.print("명언(수정) : ");
+                list.speech[k] = sc.nextLine();
+                System.out.println("작가(기존) : " + list.author[k]);
+                System.out.print("작가(수정) : ");
+                list.author[k] = sc.nextLine();
+            }
+        }
+    }
+
 }
 
