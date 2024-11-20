@@ -1,120 +1,177 @@
 package org.example;
 
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
+import java.io.*;
 import java.util.Scanner;
 
-//== 명언 앱 ==
-//명령) 종료
-
-/*
-== 명언 앱 ==
-명령) 등록
-명언 : 현재를 사랑하라.
-작가 : 작자미상
-1번 명언이 등록되었습니다.
-명령) 등록
-명언 : 과거에 집착하지 마라.
-작가 : 작자미상
-2번 명언이 등록되었습니다.
-명령) 목록
-번호 / 작가 / 명언
-----------------------
-2 / 작자미상 / 과거에 집착하지 마라.
-1 / 작자미상 / 현재를 사랑하라.
-명령) 삭제?id=1
-1번 명언이 삭제되었습니다.
-
-명령) 수정?id=2
-명언(기존) : 과거에 집착하지 마라.
-명언 : 현재와 자신을 사랑하라.
-작가(기존) : 작자미상
-작가 : 홍길동
-명령) 목록
-번호 / 작가 / 명언
-----------------------
-2 / 홍길동 / 현재와 자신을 사랑하라.
-명령) 종료
-* */
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException, ParseException {
         WiseSaying list = new WiseSaying();
+        JSONObject obj = new JSONObject();
 
         System.out.println("== 명언 앱 ==");
         Scanner sc = new Scanner(System.in);
         int i = 0;
         int num = 1;
+        int lastId = getLastId();
 
+        label:
         while (true) {
             System.out.print("명령) ");
+//            System.out.printf("입력한 명령 : %s".formatted(sc.nextLine())); %s에 입력한 문자를 붙여서 출력함.
             String order = sc.nextLine();
-
-            if (order.equals("종료")) {
-                break;
-            } else if (order.equals("등록")) {
-                enroll(list, i, num, sc);
-                i ++;
-                num++;
-            } else if (order.equals("목록")) {
-                showList(list, i);
-            } else if (order.equals("삭제")) {
-                delete(list, i, sc);
-            } else if (order.equals("수정")) {
-                modify(list, i, sc);
+            switch (order) {
+                case "종료":
+                    saveLastId(i);
+                    break label;
+                case "등록":
+                    enroll(list, i, num, sc, obj, lastId);
+                    i++;
+                    num++;
+                    break;
+                case "목록":
+                    showList(list, i, lastId);
+                    break;
+                case "삭제":
+                    delete(list, i, sc);
+                    break;
+                case "수정":
+                    modify(list, i, sc);
+                    break;
             }
+        }
+        sc.close();
+    }
+
+    private static void saveLastId(int num) {
+        File file = new File("C:\\workplace\\intellij\\20241118-wise-saying\\src\\main\\java\\org\\example\\db\\wiseSaying\\lastId.txt");
+        try (FileWriter fw = new FileWriter(file)) {
+            fw.write(String.valueOf(num));
+            System.out.println("저장  = "+num);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
-    private static void enroll(WiseSaying list, int i, int num, Scanner sc) {
-        list.num[i] = num;
+    private static int getLastId() throws IOException {
+        File file = new File("C:\\workplace\\intellij\\20241118-wise-saying\\src\\main\\java\\org\\example\\db\\wiseSaying\\lastId.txt");
+        FileReader reader = new FileReader(file);
+        String id = String.valueOf(reader.read());
+        System.out.println("읽기  = "+id);
 
-        System.out.print("명언 : ");
-        String speech = sc.nextLine();
-        list.speech[i] = speech;
+        return Integer.parseInt(id);
+    }
 
-        System.out.print("작가 : ");
-        String author = sc.nextLine();
-        list.author[i] = author;
+    private static void enroll(WiseSaying list, int i, int num, Scanner sc, JSONObject obj, int lastId) {
+        File file = new File("C:\\workplace\\intellij\\20241118-wise-saying\\src\\main\\java\\org\\example\\db\\wiseSaying\\"
+                + num + ".json");
+
+        if(lastId == -1){
+            list.num[i] = num;
+            obj.put("id", list.num[i]);
+
+            System.out.print("명언 : ");
+            String speech = sc.nextLine();
+            list.speech[i] = speech;
+            obj.put("content", list.speech[i]);
+
+            System.out.print("작가 : ");
+            String author = sc.nextLine();
+            list.author[i] = author;
+            obj.put("author", list.author[i]);
+
+            if (file.exists()) {
+                obj.replace("id", list.num[i]);
+                obj.replace("content", list.speech[i]);
+                obj.replace("author", list.author[i]);
+
+            } else {
+                try {
+                    FileWriter fw = new FileWriter(file, true);
+                    fw.write(obj.toJSONString());
+                    fw.flush();
+                    fw.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
 
         System.out.println(list.num[i] + "번 명언이 등록되었습니다.");
     }
 
-    public static void showList(WiseSaying list, int i) {
-        for (int j = 0; j < i; j++) {
-            if(list.num[j] > 0) {
-                System.out.println(list.num[j] + " / " + list.speech[j] + " / " + list.author[j]);
+    public static void showList(WiseSaying list, int i, int lastId) throws IOException, ParseException {
+        JSONParser parser = new JSONParser();
+
+        for (int j = 0; j < lastId; j++) {
+
+            File file = new File("C:\\workplace\\intellij\\20241118-wise-saying\\src\\main\\java\\org\\example\\db\\wiseSaying\\"
+                    + (j+1) + ".json");
+            FileReader reader = new FileReader(file);
+            Object obj = parser.parse(reader);
+            JSONObject jsonObject = (JSONObject) obj;
+            reader.close();
+
+            if (!jsonObject.get("id").equals("0")) {
+                System.out.println(jsonObject.get("id") + " / " + jsonObject.get("content") + " / " + jsonObject.get("author"));
             }
         }
     }
 
     public static void delete(WiseSaying list, int i, Scanner sc) {
         System.out.print("id= ");
-        int input = sc.nextInt();
+        int input = Integer.parseInt(sc.nextLine());
+        boolean result = false;
 
-        for(int k = 0; k < i; k++) {
-            if(input==list.num[k]) {
+        for (int k = 0; k < i; k++) {
+            if (input == list.num[k]) {
                 list.num[k] = 0;
                 list.speech[k] = null;
                 list.author[k] = null;
-                System.out.println(input + "번 명언이 삭제되었습니다.");
-            } else {
-                System.out.println(input + "번 명언은 존재하지 않습니다.");
+                result = true;
+                break;
             }
         }
+
+        if (result) System.out.println(input + "번 명언이 삭제되었습니다.");
+        else System.out.println(input + "번 명언이 존재하지 않습니다.");
     }
 
     public static void modify(WiseSaying list, int i, Scanner sc) {
         System.out.print("id = ");
-        int input = sc.nextInt();
+        int input = Integer.parseInt(sc.nextLine());
+
+        boolean result = false;
 
         for (int k = 0; k < i; k++) {
-            if (list.num[k] == input) {
+            if (input == list.num[k]) {
+                result = true;
+                Scanner sc2 = new Scanner(System.in);
+
                 System.out.println("명언(기존) : " + list.speech[k]);
+
                 System.out.print("명언(수정) : ");
-                list.speech[k] = sc.nextLine();
+                String newSpeech = sc2.nextLine();
+                list.speech[k] = newSpeech;
+
                 System.out.println("작가(기존) : " + list.author[k]);
+
                 System.out.print("작가(수정) : ");
-                list.author[k] = sc.nextLine();
+                String newAuthor = sc2.nextLine();
+                list.author[k] = newAuthor;
+
+                sc2.close();
+                break;
             }
         }
+
+        if (result)
+            System.out.println("수정 완료");
+        else
+            System.out.println(input + "번 명언이 존재하지 않습니다.");
     }
 
 }
