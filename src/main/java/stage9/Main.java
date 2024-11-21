@@ -14,7 +14,6 @@ public class Main {
 
         System.out.println("== 명언 앱 ==");
         int i = 0;
-        int num = 1;
 
         label:
         while (true) {
@@ -25,9 +24,8 @@ public class Main {
                 case "종료":
                     break label;
                 case "등록":
-                    enroll(list, i, num);
+                    enroll(list, i);
                     i++;
-                    num++;
                     break;
                 case "목록":
                     showList(list, i);
@@ -42,8 +40,8 @@ public class Main {
         }
     }
 
-    private static void enroll(WiseSaying list, int i, int num) throws IOException {
-        list.num.add(num);
+    private static void enroll(WiseSaying list, int i) throws IOException {
+        list.num.add(i + 1);
 
         System.out.print("명언 : ");
         String speech = sc.nextLine();
@@ -59,8 +57,9 @@ public class Main {
     }
 
     private static void showList(WiseSaying list, int i) throws IOException, ParseException {
-        if (!handlingDb.showDb(list, i)) {
-            for (int j = 0; j < i; j++) {
+        int count = handlingDb.getLastId() - 48;
+        for (int j = 0; j < count; j++) {
+            if (!handlingDb.showDb(list, j)) {
                 if (list.num.get(j) > 0) {
                     System.out.println(list.num.get(j) + " / " + list.speech.get(j) + " / " + list.author.get(j));
                 }
@@ -68,36 +67,38 @@ public class Main {
         }
     }
 
-    private static void delete(WiseSaying list, int i) {
+    private static void delete(WiseSaying list, int i) throws IOException {
         System.out.print("id= ");
         int input = Integer.parseInt(sc.nextLine());
         boolean result = false;
 
-        for (int k = 0; k < i; k++) {
-            if (input == list.num.get(k)) {
-                list.num.remove(k);
-                list.speech.remove(k);
-                list.author.remove(k);
-                result = true;
-            }
+        if (handlingDb.getLastId() < input) {
+            System.out.println(input + "번 명언이 존재하지 않습니다.");
+        } else {
+            handlingDb.deleteDbContent(list, input);
+            result = true;
         }
         if (result) System.out.println(input + "번 명언이 삭제되었습니다.");
-        else System.out.println(input + "번 명언이 존재하지 않습니다.");
     }
 
-    private static void modify(WiseSaying list, int i) {
+    private static void modify(WiseSaying list, int i) throws IOException, ParseException {
         System.out.print("id = ");
         int input = Integer.parseInt(sc.nextLine());
+        int id = handlingDb.getOneId(input);
 
-        for (int k = 0; k < i; k++) {
-            if (list.num.get(k) == input) {
-                System.out.println("명언(기존) : " + list.speech.get(k));
-                System.out.print("명언(수정) : ");
-                list.speech.set(k, sc.nextLine());
-                System.out.println("작가(기존) : " + list.author.get(k));
-                System.out.print("작가(수정) : ");
-                list.author.set(k, sc.nextLine());
-            }
+        if (handlingDb.getLastId() - 48 < id || id == -1) {
+            System.out.println(input + "번 명언이 존재하지 않습니다.");
+        } else {
+
+            list.num.add(id);
+            System.out.println("명언(기존) : " + handlingDb.getDataFromDb(list, id, "originalContent"));
+            System.out.print("명언(수정) : ");
+            String newContent = sc.nextLine();
+            System.out.println("작가(기존) : " + handlingDb.getDataFromDb(list, id, "originalAuthor"));
+            System.out.print("작가(수정) : ");
+            String newAuthor = sc.nextLine();
+
+            handlingDb.modifyDb(id, newContent, newAuthor);
         }
     }
 
