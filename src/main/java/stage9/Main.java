@@ -1,36 +1,31 @@
 package stage9;
 
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Scanner;
 
 public class Main {
+    static Scanner sc = new Scanner(System.in);
+    static HandlingDb handlingDb = new HandlingDb();
+
     public static void main(String[] args) throws IOException, ParseException {
         WiseSaying list = new WiseSaying();
-        JSONObject obj = new JSONObject();
 
         System.out.println("== 명언 앱 ==");
-        Scanner sc = new Scanner(System.in);
         int i = 0;
         int num = 1;
-//        int lastId = getLastId();
 
         label:
         while (true) {
             System.out.print("명령) ");
             String order = sc.nextLine();
+
             switch (order) {
                 case "종료":
-//                    saveLastId(i);
                     break label;
                 case "등록":
-                    enroll(list, i, num, sc, obj);
+                    enroll(list, i, num);
                     i++;
                     num++;
                     break;
@@ -38,140 +33,72 @@ public class Main {
                     showList(list, i);
                     break;
                 case "삭제":
-                    delete(list, i, sc);
+                    delete(list, i);
                     break;
                 case "수정":
-                    modify(list, i, sc);
+                    modify(list, i);
                     break;
             }
         }
-        sc.close();
     }
-//
-//    private static void saveLastId(int num) {
-//        File file = new File("C:\\workplace\\intellij\\20241118-wise-saying\\src\\main\\java\\org\\example\\db\\wiseSaying\\lastId.txt");
-//        try (FileWriter fw = new FileWriter(file)) {
-//            fw.write(String.valueOf(num));
-//            System.out.println("저장  = "+num);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//    }
-//
-//    private static int getLastId() throws IOException {
-//        File file = new File("C:\\workplace\\intellij\\20241118-wise-saying\\src\\main\\java\\org\\example\\db\\wiseSaying\\lastId.txt");
-//        FileReader reader = new FileReader(file);
-//        String id = String.valueOf(reader.read());
-//        System.out.println("읽기  = "+id);
-//
-//        return Integer.parseInt(id);
-//    }
 
-    private static void enroll(WiseSaying list, int i, int num, Scanner sc, JSONObject obj) {
-//        File file = new File("C:\\workplace\\intellij\\20241118-wise-saying\\src\\main\\java\\org\\example\\db\\wiseSaying\\"
-//                + num + ".json");
-
-        list.num[i] = num;
-        obj.put("id", list.num[i]);
+    private static void enroll(WiseSaying list, int i, int num) throws IOException {
+        list.num.add(num);
 
         System.out.print("명언 : ");
         String speech = sc.nextLine();
-        list.speech[i] = speech;
-        obj.put("content", list.speech[i]);
+        list.speech.add(speech);
 
         System.out.print("작가 : ");
         String author = sc.nextLine();
-        list.author[i] = author;
-        obj.put("author", list.author[i]);
+        list.author.add(author);
 
-//        if (file.exists()) {
-//            obj.replace("id", list.num[i]);
-//            obj.replace("content", list.speech[i]);
-//            obj.replace("author", list.author[i]);
-//
-//        } else {
-//            try {
-//                FileWriter fw = new FileWriter(file, true);
-//                fw.write(obj.toJSONString());
-//                fw.flush();
-//                fw.close();
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//        }
-        System.out.println(list.num[i] + "번 명언이 등록되었습니다.");
+        handlingDb.saveDb(list, i);
+        handlingDb.saveLastId(list);
+        System.out.println(list.num.get(i) + "번 명언이 등록되었습니다.");
     }
 
-    public static void showList(WiseSaying list, int i) throws IOException, ParseException {
-        JSONParser parser = new JSONParser();
-
-        for (int j = 0; j < i; j++) {
-
-            File file = new File("C:\\workplace\\intellij\\20241118-wise-saying\\src\\main\\java\\org\\example\\db\\wiseSaying\\"
-                    + (j + 1) + ".json");
-            FileReader reader = new FileReader(file);
-            Object obj = parser.parse(reader);
-            JSONObject jsonObject = (JSONObject) obj;
-            reader.close();
-
-            if (!jsonObject.get("id").equals("0")) {
-                System.out.println(jsonObject.get("id") + " / " + jsonObject.get("content") + " / " + jsonObject.get("author"));
+    private static void showList(WiseSaying list, int i) throws IOException, ParseException {
+        if (!handlingDb.showDb(list, i)) {
+            for (int j = 0; j < i; j++) {
+                if (list.num.get(j) > 0) {
+                    System.out.println(list.num.get(j) + " / " + list.speech.get(j) + " / " + list.author.get(j));
+                }
             }
         }
     }
 
-    public static void delete(WiseSaying list, int i, Scanner sc) {
+    private static void delete(WiseSaying list, int i) {
         System.out.print("id= ");
         int input = Integer.parseInt(sc.nextLine());
         boolean result = false;
 
         for (int k = 0; k < i; k++) {
-            if (input == list.num[k]) {
-                list.num[k] = 0;
-                list.speech[k] = null;
-                list.author[k] = null;
+            if (input == list.num.get(k)) {
+                list.num.remove(k);
+                list.speech.remove(k);
+                list.author.remove(k);
                 result = true;
-                break;
             }
         }
-
         if (result) System.out.println(input + "번 명언이 삭제되었습니다.");
         else System.out.println(input + "번 명언이 존재하지 않습니다.");
     }
 
-    public static void modify(WiseSaying list, int i, Scanner sc) {
+    private static void modify(WiseSaying list, int i) {
         System.out.print("id = ");
         int input = Integer.parseInt(sc.nextLine());
 
-        boolean result = false;
-
         for (int k = 0; k < i; k++) {
-            if (input == list.num[k]) {
-                result = true;
-                Scanner sc2 = new Scanner(System.in);
-
-                System.out.println("명언(기존) : " + list.speech[k]);
-
+            if (list.num.get(k) == input) {
+                System.out.println("명언(기존) : " + list.speech.get(k));
                 System.out.print("명언(수정) : ");
-                String newSpeech = sc2.nextLine();
-                list.speech[k] = newSpeech;
-
-                System.out.println("작가(기존) : " + list.author[k]);
-
+                list.speech.set(k, sc.nextLine());
+                System.out.println("작가(기존) : " + list.author.get(k));
                 System.out.print("작가(수정) : ");
-                String newAuthor = sc2.nextLine();
-                list.author[k] = newAuthor;
-
-                sc2.close();
-                break;
+                list.author.set(k, sc.nextLine());
             }
         }
-
-        if (result)
-            System.out.println("수정 완료");
-        else
-            System.out.println(input + "번 명언이 존재하지 않습니다.");
     }
 
 }
-

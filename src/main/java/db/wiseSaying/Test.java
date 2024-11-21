@@ -1,7 +1,5 @@
-package org.example.db.wiseSaying;
+package db.wiseSaying;
 
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import java.io.File;
@@ -20,7 +18,7 @@ public class Test {
 //        reader.close();
 //        System.out.println(jsonObject.get("id"));
 
-        File file = new File("C:\\workplace\\intellij\\20241118-wise-saying\\src\\main\\java\\org\\example\\db\\wiseSaying\\lastId.txt");
+        File file = new File("C:\\workplace\\intellij\\20241118-wise-saying\\src\\main\\java\\db\\wiseSaying\\lastId.txt");
         FileReader reader = new FileReader(file);
         System.out.println(reader.read());
     }

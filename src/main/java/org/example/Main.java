@@ -8,43 +8,43 @@ import java.io.*;
 import java.util.Scanner;
 
 public class Main {
-    public static void main(String[] args) throws IOException, ParseException {
-        WiseSaying list = new WiseSaying();
-        JSONObject obj = new JSONObject();
-
-        System.out.println("== 명언 앱 ==");
-        Scanner sc = new Scanner(System.in);
-        int i = 0;
-        int num = 1;
-        int lastId = getLastId();
-
-        label:
-        while (true) {
-            System.out.print("명령) ");
-//            System.out.printf("입력한 명령 : %s".formatted(sc.nextLine())); %s에 입력한 문자를 붙여서 출력함.
-            String order = sc.nextLine();
-            switch (order) {
-                case "종료":
-                    saveLastId(i);
-                    break label;
-                case "등록":
-                    enroll(list, i, num, sc, obj, lastId);
-                    i++;
-                    num++;
-                    break;
-                case "목록":
-                    showList(list, i, lastId);
-                    break;
-                case "삭제":
-                    delete(list, i, sc);
-                    break;
-                case "수정":
-                    modify(list, i, sc);
-                    break;
-            }
-        }
-        sc.close();
-    }
+//    public static void main(String[] args) throws IOException, ParseException {
+//        WiseSaying list = new WiseSaying();
+//        JSONObject obj = new JSONObject();
+//
+//        System.out.println("== 명언 앱 ==");
+//        Scanner sc = new Scanner(System.in);
+//        int i = 0;
+//        int num = 1;
+//        int lastId = getLastId();
+//
+//        label:
+//        while (true) {
+//            System.out.print("명령) ");
+////            System.out.printf("입력한 명령 : %s".formatted(sc.nextLine())); %s에 입력한 문자를 붙여서 출력함.
+//            String order = sc.nextLine();
+//            switch (order) {
+//                case "종료":
+//                    saveLastId(i);
+//                    break label;
+//                case "등록":
+//                    enroll(list, i, num, sc, obj, lastId);
+//                    i++;
+//                    num++;
+//                    break;
+//                case "목록":
+//                    showList(list, i, lastId);
+//                    break;
+//                case "삭제":
+//                    delete(list, i, sc);
+//                    break;
+//                case "수정":
+//                    modify(list, i, sc);
+//                    break;
+//            }
+//        }
+//        sc.close();
+//    }
 
     private static void saveLastId(int num) {
         File file = new File("C:\\workplace\\intellij\\20241118-wise-saying\\src\\main\\java\\org\\example\\db\\wiseSaying\\lastId.txt");
