@@ -52,7 +52,7 @@ public class Main {
     }
 
     private static void build() throws IOException, ParseException {
-        handlingDb.mergeJson();
+        handlingDb.mergeJson(handlingDb.getLastId());
     }
 
     private static void enroll(WiseSaying list, int i) throws IOException {

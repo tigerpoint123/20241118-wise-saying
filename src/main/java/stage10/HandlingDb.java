@@ -1,19 +1,13 @@
 package stage10;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.reflect.TypeToken;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import java.io.*;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
 
 public class HandlingDb {
-    File txtFile = new File("C:\\workplace\\intellij\\20241118-wise-saying\\src\\main\\java\\db\\wiseSaying\\lastId\\lastId.txt");
+    File txtFile = new File("C:\\workplace\\intellij\\20241118-wise-saying\\src\\main\\java\\db\\wiseSaying\\lastId.txt");
     JSONObject obj = new JSONObject();
 
     public void saveDb(WiseSaying list, int i) {
@@ -112,28 +106,24 @@ public class HandlingDb {
         }
     }
 
-    public void mergeJson() {
+    public void mergeJson(int lastId) {
+        File[] fileList = new File[lastId];
+        File dataFile = new File("C:\\workplace\\intellij\\20241118-wise-saying\\src\\main\\java\\db\\wiseSaying\\data.json");
         try {
             JSONParser parser = new JSONParser();
-            File jsonFile = new File("C:\\workplace\\intellij\\20241118-wise-saying\\src\\main\\java\\db\\wiseSaying\\1.json");
-            File jsonFile2 = new File("C:\\workplace\\intellij\\20241118-wise-saying\\src\\main\\java\\db\\wiseSaying\\2.json");
-            File dataFile = new File("C:\\workplace\\intellij\\20241118-wise-saying\\src\\main\\java\\db\\wiseSaying\\data.json");
             FileWriter fw = new FileWriter(dataFile);
-            FileReader reader = new FileReader(jsonFile);
-            FileReader reader2 = new FileReader(jsonFile2);
-            Object obj = parser.parse(reader);
-            Object obj2 = parser.parse(reader2);
-            JSONObject jsonObject = (JSONObject) obj;
-            JSONObject jsonObject2 = (JSONObject) obj2;
-
             JsonArray jsonArray = new JsonArray();
-            jsonArray.add(jsonObject.toJSONString());
-            jsonArray.add(jsonObject2.toJSONString());
 
-            fw.write(jsonArray.toString());
+            for(int i =1; i < lastId; i++) {
+                fileList[i] = new File("C:\\workplace\\intellij\\20241118-wise-saying\\src\\main\\java\\db\\wiseSaying\\" + i + ".json");
+                FileReader reader = new FileReader(fileList[i]);
+                Object obj = parser.parse(reader);
+                JSONObject jsonObject = (JSONObject) obj;
+                jsonArray.add(jsonObject.toJSONString());
+                fw.write(jsonArray.toString());
+            }
             fw.flush();
             fw.close();
-
         } catch (Exception e) {
             e.printStackTrace();
         }
