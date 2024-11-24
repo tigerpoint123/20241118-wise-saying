@@ -1,5 +1,7 @@
 package stage11.WiseSayingController;
 
+import org.json.simple.JSONObject;
+import org.json.simple.parser.ParseException;
 import stage11.WiseSaying.WiseSaying;
 import stage11.WiseSayingRepository.WiseSayingRepository;
 import stage11.WiseSayingService.WiseSayingService;
@@ -29,8 +31,11 @@ public class WiseSayingController {
         System.out.println(list.id.get(i) + "번 명언이 등록되었습니다.");
     }
 
-    public void showList() {
-        wiseSayingService.showList(list);
+    public void showList() throws IOException {
+        for (int i = 0; i < wiseSayingService.getLastId(); i++) {
+            JSONObject obj = wiseSayingService.getDataFromDb(i+1);
+            System.out.println(obj.get("id") + " / " + obj.get("content") + " / " + obj.get("author"));
+        }
     }
 
     public void delete() {
@@ -52,10 +57,10 @@ public class WiseSayingController {
         try {
             if (wiseSayingService.isIdExist(input)) {
                 list.id.add(input);
-                System.out.println("명언(기존) : " + wiseSayingService.getDataFromDb(list, input).get("content").toString());
+                System.out.println("명언(기존) : " + wiseSayingService.getDataFromDb(input).get("content").toString());
                 System.out.print("명언(수정) : ");
                 String newContent = sc.nextLine();
-                System.out.println("작가(기존) : " + wiseSayingService.getDataFromDb(list, input).get("author").toString());
+                System.out.println("작가(기존) : " + wiseSayingService.getDataFromDb(input).get("author").toString());
                 System.out.print("작가(수정) : ");
                 String newAuthor = sc.nextLine();
 
@@ -70,9 +75,8 @@ public class WiseSayingController {
     }
 
     public void build() {
-        wiseSayingService.build();
         try {
-            wiseSayingRepository.buildJson(wiseSayingRepository.getLastId() - 48);
+            wiseSayingService.build(wiseSayingService.getLastId());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

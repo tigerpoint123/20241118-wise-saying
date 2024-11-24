@@ -16,19 +16,8 @@ public class WiseSayingService {
         wiseSayingRepository.saveLastId(list);
     }
 
-    public void showList(WiseSaying list) {
-        try {
-            int count = wiseSayingRepository.getLastId() - 48;
-            for (int j = 0; j < count; j++) {
-                if (!wiseSayingRepository.showDb(list, j)) {
-                    if (list.id.get(j) > 0) {
-                        System.out.println(list.id.get(j) + " / " + list.content.get(j) + " / " + list.author.get(j));
-                    }
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    public int getLastId() throws IOException {
+        return wiseSayingRepository.getLastId() - 48;
     }
 
     public void delete(WiseSaying list, int input) {
@@ -39,8 +28,8 @@ public class WiseSayingService {
         wiseSayingRepository.modifyDb(input, newContent, newAuthor);
     }
 
-    public void build() {
-
+    public void build(int lastId) {
+        wiseSayingRepository.buildJson(lastId);
     }
 
     public boolean isIdExist(int input) {
@@ -55,9 +44,9 @@ public class WiseSayingService {
         }
     }
 
-    public JSONObject getDataFromDb(WiseSaying list, int input) {
+    public JSONObject getDataFromDb(int input) {
         try {
-            return wiseSayingRepository.getDataFromDb(list, input, "originalContent");
+            return wiseSayingRepository.getDataFromDb(input);
         } catch (IOException e) {
             throw new RuntimeException(e);
         } catch (ParseException e) {

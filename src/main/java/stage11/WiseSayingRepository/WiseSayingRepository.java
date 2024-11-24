@@ -39,7 +39,7 @@ public class WiseSayingRepository {
         }
     }
 
-    public JSONObject getDataFromDb(WiseSaying list, int id, String original) throws IOException, ParseException {
+    public JSONObject getDataFromDb(int id) throws IOException, ParseException {
         JSONParser parser = new JSONParser();
         File jsonFile = new File(directoryPath + id + ".json");
         FileReader reader = new FileReader(jsonFile);
@@ -53,22 +53,6 @@ public class WiseSayingRepository {
         FileReader reader = new FileReader(txtFile);
         int id = (char) reader.read();
         return id;
-    }
-
-    public boolean showDb(WiseSaying list, int i) throws IOException, ParseException {
-        JSONParser parser = new JSONParser();
-        File jsonFile = new File(directoryPath + (i + 1) + ".json");
-
-        if (jsonFile.exists()) {
-            FileReader reader = new FileReader(jsonFile);
-            Object obj = parser.parse(reader);
-            JSONObject jsonObject = (JSONObject) obj;
-
-            if (jsonObject.get("id") != null) {
-                System.out.println(jsonObject.get("id") + " / " + jsonObject.get("content") + " / " + jsonObject.get("author"));
-            }
-            return true;
-        } else return false;
     }
 
     public void deleteDbContent(WiseSaying list, int input) {
@@ -85,7 +69,7 @@ public class WiseSayingRepository {
     }
 
     public void modifyDb(int id, String newContent, String newAuthor) {
-        File jsonFile = new File(directoryPath+ id + ".json");
+        File jsonFile = new File(directoryPath + id + ".json");
 
         try (FileWriter fw = new FileWriter(jsonFile)) {
             obj.put("id", id);
@@ -106,8 +90,8 @@ public class WiseSayingRepository {
             FileWriter fw = new FileWriter(dataFile);
             JsonArray jsonArray = new JsonArray();
 
-            for(int i =0; i < lastId; i++) {
-                fileList[i] = new File(directoryPath + (i+1) + ".json");
+            for (int i = 0; i < lastId; i++) {
+                fileList[i] = new File(directoryPath + (i + 1) + ".json");
                 FileReader reader = new FileReader(fileList[i]);
                 Object obj = parser.parse(reader);
                 JSONObject jsonObject = (JSONObject) obj;

@@ -1,5 +1,6 @@
 package stage11.App;
 
+import org.json.simple.parser.ParseException;
 import stage11.WiseSayingController.WiseSayingController;
 
 import java.io.IOException;
@@ -10,7 +11,7 @@ public class App {
     static Scanner sc = new Scanner(System.in);
     WiseSayingController controller = new WiseSayingController();
 
-    public void run() throws IOException {
+    public void run() throws IOException, ParseException {
         System.out.println("== 명언 앱 ==");
         int i = 0;
 
