@@ -1,6 +1,5 @@
 package stage11.App;
 
-import org.json.simple.parser.ParseException;
 import stage11.WiseSayingController.WiseSayingController;
 
 import java.io.IOException;
@@ -8,10 +7,10 @@ import java.util.Scanner;
 
 // 사용자 입력을 받고 그것이 controller에게 넘겨야 하는지 판단해서 맞으면 메서드 넘김. 스캐너 출력 사용가능
 public class App {
-    static Scanner sc = new Scanner(System.in);
     WiseSayingController controller = new WiseSayingController();
 
-    public void run() throws IOException, ParseException {
+    public void run() throws IOException {
+        Scanner sc = new Scanner(System.in);
         System.out.println("== 명언 앱 ==");
         int i = 0;
 
