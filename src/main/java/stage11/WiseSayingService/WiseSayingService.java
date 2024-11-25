@@ -9,7 +9,11 @@ import java.io.IOException;
 
 // 순수 비즈니스 로직. 스캐너 사용 금지. 출력 금지.
 public class WiseSayingService {
-    private static final WiseSayingRepository wiseSayingRepository = new WiseSayingRepository();
+    private final WiseSayingRepository wiseSayingRepository;
+
+    public WiseSayingService() {
+        this.wiseSayingRepository = new WiseSayingRepository();
+    }
 
     public void enroll(WiseSaying list, int i) {
         wiseSayingRepository.saveDb(list, i);

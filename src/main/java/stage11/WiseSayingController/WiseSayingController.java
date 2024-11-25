@@ -11,9 +11,20 @@ import java.util.Scanner;
 
 //고객의 명령을 입력받고 적절한 응답을 표현. 여기서 출력 스캐너 사용가능
 public class WiseSayingController {
-    private final WiseSaying list = new WiseSaying();
-    private final WiseSayingService wiseSayingService = new WiseSayingService();
-    private final Scanner sc = new Scanner(System.in);
+    private WiseSaying list;
+    private final WiseSayingService wiseSayingService;
+    private final Scanner sc;
+
+    public WiseSayingController() {
+        this.wiseSayingService = new WiseSayingService();
+        this.sc = new Scanner(System.in);
+        this.list = new WiseSaying();
+    }
+
+//    public WiseSayingController(Scanner scanner){
+//        this.wiseSayingService = new WiseSayingService();
+//        this.sc = scanner;
+//    }
 
     public void enroll(int i) {
         list.id.add(i + 1);

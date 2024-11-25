@@ -13,9 +13,9 @@ import java.io.IOException;
 
 //데이터의 조회, 수정, 삭제, 생성 담당. 스캐너 출력 사용금지.
 public class WiseSayingRepository {
-    String directoryPath = "C:\\workplace\\intellij\\20241118-wise-saying\\src\\main\\java\\db\\wiseSaying\\";
-    File txtFile = new File(directoryPath + "lastId.txt");
-    JSONObject obj = new JSONObject();
+    private final String directoryPath = "C:\\workplace\\intellij\\20241118-wise-saying\\src\\main\\java\\db\\wiseSaying\\";
+    private final File txtFile = new File(directoryPath + "lastId.txt");
+    private final JSONObject obj = new JSONObject();
 
     public void saveDb(WiseSaying list, int i) {
         File jsonFile = new File(directoryPath + (i + 1) + ".json");
