@@ -1,9 +1,7 @@
 package stage11.WiseSayingController;
 
 import org.json.simple.JSONObject;
-import org.json.simple.parser.ParseException;
 import stage11.WiseSaying.WiseSaying;
-import stage11.WiseSayingRepository.WiseSayingRepository;
 import stage11.WiseSayingService.WiseSayingService;
 
 import java.io.IOException;
@@ -20,11 +18,6 @@ public class WiseSayingController {
         this.sc = new Scanner(System.in);
         this.list = new WiseSaying();
     }
-
-//    public WiseSayingController(Scanner scanner){
-//        this.wiseSayingService = new WiseSayingService();
-//        this.sc = scanner;
-//    }
 
     public void enroll(int i) {
         list.id.add(i + 1);
