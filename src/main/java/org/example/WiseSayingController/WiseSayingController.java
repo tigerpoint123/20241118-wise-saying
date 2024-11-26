@@ -1,10 +1,12 @@
 package org.example.WiseSayingController;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.example.WiseSaying.WiseSaying;
 import org.example.WiseSayingService.WiseSayingService;
 import org.json.simple.JSONObject;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Scanner;
 
 //고객의 명령을 입력받고 적절한 응답을 표현. 여기서 출력 스캐너 사용가능
@@ -26,21 +28,45 @@ public class WiseSayingController {
         System.out.print("작가 : ");
         String author = sc.nextLine();
 
+        i = wiseSayingService.getFileName().length;
+
         wiseSaying.setId(i + 1); // i가 0부터니까
         wiseSaying.setContent(speech);
         wiseSaying.setAuthor(author);
         wiseSayingService.enrollService(wiseSaying);
-        System.out.println((i+1) + "번 명언이 등록되었습니다.");
+        wiseSayingService.saveLastIdService(i+1);
+        System.out.println((i + 1) + "번 명언이 등록되었습니다.");
     }
 
     public void showList(String order) throws IOException {
-        System.out.println("번호 / 명언 / 작가");
-        System.out.println(order);
         String[] fileName = wiseSayingService.getFileName();
+        if (order.contains("?")) {
+            String[] split = order.split("[=&?]"); // 목록 keywordType content keyword 작가 (예시임)
+            System.out.println("---------------------------");
+            String keywordType = split[2];
+            System.out.println("검색타입 : " + keywordType);
+            String keyword = split[4];
+            System.out.println("검색어 : " + keyword);
+            System.out.println("---------------------------");
+            System.out.println("번호 / 명언 / 작가");
+            System.out.println("---------------------------");
 
-        for (int i = 0; i < fileName.length; i++) {
-            JSONObject obj = wiseSayingService.getDataService(i + 1);
-            System.out.println(obj.get("id") + " / " + obj.get("content") + " / " + obj.get("author"));
+            String str = wiseSayingService.searchService(keyword, keywordType);
+            ObjectMapper mapper = new ObjectMapper();
+            // json 문자열을 list<wisesaying> 객체로 변환
+            List<WiseSaying> list = mapper.readValue(str, mapper.getTypeFactory().constructCollectionType(List.class, WiseSaying.class));
+
+            for (WiseSaying saying : list) {
+                System.out.println(saying.getId() + " / " + saying.getContent() + " / " + saying.getAuthor());
+            }
+        } else {
+            System.out.println("---------------------------");
+            System.out.println("번호 / 명언 / 작가");
+            System.out.println("---------------------------");
+            for (int i = 0; i < fileName.length; i++) {
+                JSONObject obj = wiseSayingService.getDataService(i + 1);
+                System.out.println(obj.get("id") + " / " + obj.get("content") + " / " + obj.get("author"));
+            }
         }
     }
 
@@ -82,12 +108,6 @@ public class WiseSayingController {
     }
 
     public void build() {
-            wiseSayingService.build();
-    }
-
-    public void saveLastId(int i) throws IOException {
-//        if (wiseSayingService.getLastId() < i) {
-        wiseSayingService.saveLastIdService(i);
-//        }
+        wiseSayingService.build();
     }
 }

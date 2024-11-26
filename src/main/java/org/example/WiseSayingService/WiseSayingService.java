@@ -58,4 +58,8 @@ public class WiseSayingService {
     public String[] getFileName() {
         return wiseSayingRepository.getFileListFromDb();
     }
+
+    public String searchService(String keyword, String keywordType) {
+        return wiseSayingRepository.searchDb(keyword, keywordType);
+    }
 }

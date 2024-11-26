@@ -26,8 +26,8 @@ public class WiseSayingControllerTest {
     void 등록테스트() throws IOException {
         // given
         String testInput = """
-                명언테스트2
-                작가테스트2
+                명언테스트
+                작가테스트
                 """;
         scanner = TestUtil.genScanner(testInput);
 
@@ -35,8 +35,8 @@ public class WiseSayingControllerTest {
         controller = new WiseSayingController(scanner);
 
         // when
-        controller.enroll(0); //번호
-        controller.saveLastId(1);
+        controller.enroll(4); //번호
+//        controller.saveLastId(1);
 
         // then
         Assertions.assertTrue(outContent.toString().contains("명언이 등록되었습니다"));

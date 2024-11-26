@@ -19,26 +19,20 @@ public class App {
             System.out.print("명령) ");
             String order = sc.nextLine();
 
-            switch (order) {
-                case "종료":
-                    controller.saveLastId(i);
-                    break label;
-                case "등록":
-                    controller.enroll(i);
-                    i++;
-                    break;
-                case "목록":
-                    controller.showList(order);
-                    break;
-                case "삭제?id=":
-                    controller.delete(order);
-                    break;
-                case "수정?id=":
-                    controller.modify(order);
-                    break;
-                case "빌드":
-                    controller.build();
-                    break;
+            if (order.equals("종료")) {
+//                controller.saveLastId(i);
+                break ;
+            } else if (order.equals("등록")) {
+                controller.enroll(i);
+                i++;
+            } else if (order.contains("목록")) {
+                controller.showList(order);
+            } else if (order.contains("삭제?id=")) {
+                controller.delete(order);
+            } else if (order.contains("수정?id=")) {
+                controller.modify(order);
+            } else if (order.equals("빌드")) {
+                controller.build();
             }
         }
     }

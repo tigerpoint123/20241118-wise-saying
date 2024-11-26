@@ -1,7 +1,6 @@
 package org.example.WiseSayingRepository;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.JsonArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -125,5 +124,34 @@ public class WiseSayingRepository {
         };
         String[] list = dir.list(filter);
         return list;
+    }
+
+    public String searchDb(String keyword, String keywordType) { // content, 작가
+        // object mapper 객체 생성
+        ObjectMapper mapper = new ObjectMapper();
+        int length = getFileListFromDb().length;
+        JSONParser parser = new JSONParser();
+        List<WiseSaying> arr = new ArrayList<>();
+        String mergedJson;
+        try {
+            for (int i = 0; i < length; i++) {
+                File jsonFile = new File(dbDirectoryPath + (i + 1) + ".json");
+                FileReader reader = new FileReader(jsonFile);
+                Object obj = parser.parse(reader);
+                JSONObject jsonObject = (JSONObject) obj;
+
+                if(jsonObject.get(keywordType).toString().contains(keyword)) {
+                    // json 문자열을 객체로 변환
+                    wiseSaying = mapper.readValue(jsonObject.toJSONString(), WiseSaying.class);
+                    // 객체를 arr 리스트에 추가
+                    arr.add(wiseSaying);
+                }
+            }
+            // 모든 리스트를 json 문자열로 변환
+            mergedJson = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(arr);
+        } catch (IOException | ParseException e) {
+            throw new RuntimeException(e);
+        }
+        return mergedJson;
     }
 }
