@@ -5,26 +5,33 @@ import stage11.WiseSaying.WiseSaying;
 import stage11.WiseSayingService.WiseSayingService;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 //고객의 명령을 입력받고 적절한 응답을 표현. 여기서 출력 스캐너 사용가능
 public class WiseSayingController {
-    private WiseSaying list;
     private final WiseSayingService wiseSayingService;
     private final Scanner sc;
+    private List<WiseSaying> list;
 
     public WiseSayingController() {
         this.wiseSayingService = new WiseSayingService();
         this.sc = new Scanner(System.in);
-        this.list = new WiseSaying();
+        this.list = new ArrayList<>();
     }
 
+//    public WiseSayingController(WiseSayingService wiseSayingService, Scanner sc) {
+//        this.wiseSayingService = wiseSayingService;
+//        this.sc = sc;
+//    }
+
     public void enroll(int i) {
-        list.id.add(i + 1);
+        list.add(i);
 
         System.out.print("명언 : ");
         String speech = sc.nextLine();
-        list.content.add(speech);
+        list.add(speech);
 
         System.out.print("작가 : ");
         String author = sc.nextLine();
@@ -84,4 +91,5 @@ public class WiseSayingController {
             throw new RuntimeException(e);
         }
     }
+
 }
