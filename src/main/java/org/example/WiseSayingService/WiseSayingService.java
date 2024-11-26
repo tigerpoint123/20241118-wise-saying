@@ -1,9 +1,9 @@
-package stage11.WiseSayingService;
+package org.example.WiseSayingService;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
-import stage11.WiseSaying.WiseSaying;
-import stage11.WiseSayingRepository.WiseSayingRepository;
+import org.example.WiseSaying.WiseSaying;
+import org.example.WiseSayingRepository.WiseSayingRepository;
 
 import java.io.IOException;
 
@@ -15,21 +15,20 @@ public class WiseSayingService {
         this.wiseSayingRepository = new WiseSayingRepository();
     }
 
-    public void enroll(WiseSaying list, int i) {
-        wiseSayingRepository.saveDb(list, i);
-        wiseSayingRepository.saveLastId(list);
+    public void enrollService(WiseSaying wiseSaying) {
+        wiseSayingRepository.enrollDb(wiseSaying);
     }
 
     public int getLastId() throws IOException {
         return wiseSayingRepository.getLastId() - 48;
     }
 
-    public void delete(WiseSaying list, int input) {
-        wiseSayingRepository.deleteDbContent(list, input);
+    public void deleteService(int input) {
+        wiseSayingRepository.deleteDb(input);
     }
 
-    public void modify(int input, String newContent, String newAuthor) {
-        wiseSayingRepository.modifyDb(input, newContent, newAuthor);
+    public void modifyService(WiseSaying wiseSaying) {
+        wiseSayingRepository.modifyDb(wiseSaying);
     }
 
     public void build(int lastId) {
@@ -48,7 +47,7 @@ public class WiseSayingService {
         }
     }
 
-    public JSONObject getDataFromDb(int input) {
+    public JSONObject getDataService(int input) {
         try {
             return wiseSayingRepository.getDataFromDb(input);
         } catch (IOException e) {
@@ -56,5 +55,9 @@ public class WiseSayingService {
         } catch (ParseException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public void saveLastIdService(int i) {
+        wiseSayingRepository.saveLastIdRepository(i);
     }
 }

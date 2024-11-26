@@ -1,18 +1,18 @@
-package stage11.App;
+package org.example.App;
 
-import stage11.WiseSayingController.WiseSayingController;
+import org.example.WiseSayingController.WiseSayingController;
 
 import java.io.IOException;
 import java.util.Scanner;
 
 // 사용자 입력을 받고 그것이 controller에게 넘겨야 하는지 판단해서 맞으면 메서드 넘김. 스캐너 출력 사용가능
 public class App {
-    WiseSayingController controller = new WiseSayingController();
+    Scanner sc = new Scanner(System.in);
+    WiseSayingController controller = new WiseSayingController(sc);
 
     public void run() throws IOException {
-        Scanner sc = new Scanner(System.in);
         System.out.println("== 명언 앱 ==");
-        int i = 0;
+        int i =0;
 
         label:
         while (true) {
@@ -21,6 +21,7 @@ public class App {
 
             switch (order) {
                 case "종료":
+                    controller.saveLastId(i);
                     break label;
                 case "등록":
                     controller.enroll(i);
@@ -29,11 +30,11 @@ public class App {
                 case "목록":
                     controller.showList();
                     break;
-                case "삭제":
-                    controller.delete();
+                case "삭제?id=":
+                    controller.delete(order);
                     break;
-                case "수정":
-                    controller.modify();
+                case "수정?id=":
+                    controller.modify(order);
                     break;
                 case "빌드":
                     controller.build();

@@ -1,7 +1,7 @@
-package stage11.Main;
+package org.example.Main;
 
 import org.json.simple.parser.ParseException;
-import stage11.App.App;
+import org.example.App.App;
 
 import java.io.IOException;
 

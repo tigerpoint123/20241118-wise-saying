@@ -1,10 +1,10 @@
-package stage11.WiseSayingRepository;
+package org.example.WiseSayingRepository;
 
 import com.google.gson.JsonArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import stage11.WiseSaying.WiseSaying;
+import org.example.WiseSaying.WiseSaying;
 
 import java.io.File;
 import java.io.FileReader;
@@ -17,13 +17,13 @@ public class WiseSayingRepository {
     private final File txtFile = new File(directoryPath + "lastId.txt");
     private final JSONObject obj = new JSONObject();
 
-    public void saveDb(WiseSaying list, int i) {
-        File jsonFile = new File(directoryPath + (i + 1) + ".json");
+    public void enrollDb(WiseSaying wiseSaying) {
+        File jsonFile = new File(directoryPath + wiseSaying.getId() + ".json");
 
         try (FileWriter fw = new FileWriter(jsonFile)) {
-            obj.put("id", list.id.get(i));
-            obj.put("content", list.content.get(i));
-            obj.put("author", list.author.get(i));
+            obj.put("id", wiseSaying.getId());
+            obj.put("content", wiseSaying.getContent());
+            obj.put("author", wiseSaying.getAuthor());
             fw.write(obj.toJSONString());
             fw.flush();
         } catch (IOException e) {
@@ -31,9 +31,9 @@ public class WiseSayingRepository {
         }
     }
 
-    public void saveLastId(WiseSaying list) {
+    public void saveLastIdRepository(int i) {
         try (FileWriter fw = new FileWriter(txtFile)) {
-            fw.write(String.valueOf(list.id.size()));
+            fw.write(String.valueOf(i));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -55,7 +55,7 @@ public class WiseSayingRepository {
         return id;
     }
 
-    public void deleteDbContent(WiseSaying list, int input) {
+    public void deleteDb(int input) {
         File jsonFile = new File(directoryPath + input + ".json");
         try (FileWriter fw = new FileWriter(jsonFile)) {
             obj.remove("id");
@@ -68,13 +68,13 @@ public class WiseSayingRepository {
         }
     }
 
-    public void modifyDb(int id, String newContent, String newAuthor) {
-        File jsonFile = new File(directoryPath + id + ".json");
+    public void modifyDb(WiseSaying wiseSaying) {
+        File jsonFile = new File(directoryPath + wiseSaying.getId() + ".json");
 
         try (FileWriter fw = new FileWriter(jsonFile)) {
-            obj.put("id", id);
-            obj.put("content", newContent);
-            obj.put("author", newAuthor);
+            obj.put("id", wiseSaying.getId());
+            obj.put("content", wiseSaying.getContent());
+            obj.put("author", wiseSaying.getAuthor());
             fw.write(obj.toJSONString());
             fw.flush();
         } catch (IOException e) {
@@ -104,5 +104,4 @@ public class WiseSayingRepository {
             e.printStackTrace();
         }
     }
-
 }
