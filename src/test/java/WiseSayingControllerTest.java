@@ -93,6 +93,12 @@ public class WiseSayingControllerTest {
     }
 
     @Test
+    void 검색테스트() {
+        // given
+        String input = "목록?keywordType=content&keyword=과거";
+    }
+
+    @Test
     void 빌드테스트() {
         WiseSayingController controller = new WiseSayingController(scanner);
         controller.build();

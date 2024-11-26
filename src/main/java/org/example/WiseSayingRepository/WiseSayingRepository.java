@@ -125,6 +125,5 @@ public class WiseSayingRepository {
         };
         String[] list = dir.list(filter);
         return list;
-
     }
 }

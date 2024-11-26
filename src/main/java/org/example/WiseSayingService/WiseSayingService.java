@@ -19,10 +19,6 @@ public class WiseSayingService {
         wiseSayingRepository.enrollDb(wiseSaying);
     }
 
-    public int getLastId() throws IOException {
-        return wiseSayingRepository.getLastId() - 48;
-    }
-
     public void deleteService(int input) {
         wiseSayingRepository.deleteDb(input);
     }
