@@ -1,3 +1,4 @@
+import org.example.WiseSaying.WiseSaying;
 import org.example.WiseSayingController.WiseSayingController;
 import org.junit.jupiter.api.*;
 
@@ -26,8 +27,8 @@ public class WiseSayingControllerTest {
     void 등록테스트() throws IOException {
         // given
         String testInput = """
-                명언테스트
-                작가테스트
+                명언테스트2
+                작가테스트2
                 """;
         scanner = TestUtil.genScanner(testInput);
 
@@ -54,7 +55,7 @@ public class WiseSayingControllerTest {
             throw new RuntimeException(e);
         }
         //then
-        Assertions.assertTrue(outContent.toString().contains("1 / 명언 11 / 작가 11"));
+        Assertions.assertTrue(outContent.toString().contains("1 / 명언테스트 / 작가테스트"));
     }
 
     @Test

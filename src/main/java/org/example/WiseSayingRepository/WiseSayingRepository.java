@@ -1,24 +1,26 @@
 package org.example.WiseSayingRepository;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.example.WiseSaying.WiseSaying;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 
 //데이터의 조회, 수정, 삭제, 생성 담당. 스캐너 출력 사용금지.
 public class WiseSayingRepository {
-    private final String directoryPath = "C:\\workplace\\intellij\\20241118-wise-saying\\src\\main\\java\\db\\wiseSaying\\";
-    private final File txtFile = new File(directoryPath + "lastId.txt");
+    private final String dbDirectoryPath = "C:\\workplace\\intellij\\20241118-wise-saying\\src\\main\\java\\db\\wiseSaying\\";
+    private final String dataJsonDirectoryPath = "C:\\workplace\\intellij\\20241118-wise-saying\\src\\main\\resources\\";
+    private final File txtFile = new File(dataJsonDirectoryPath + "lastId.txt");
     private final JSONObject obj = new JSONObject();
+    private WiseSaying wiseSaying;
 
     public void enrollDb(WiseSaying wiseSaying) {
-        File jsonFile = new File(directoryPath + wiseSaying.getId() + ".json");
+        File jsonFile = new File(dbDirectoryPath + wiseSaying.getId() + ".json");
 
         try (FileWriter fw = new FileWriter(jsonFile)) {
             obj.put("id", wiseSaying.getId());
@@ -41,7 +43,7 @@ public class WiseSayingRepository {
 
     public JSONObject getDataFromDb(int id) throws IOException, ParseException {
         JSONParser parser = new JSONParser();
-        File jsonFile = new File(directoryPath + id + ".json");
+        File jsonFile = new File(dbDirectoryPath + id + ".json");
         FileReader reader = new FileReader(jsonFile);
         Object obj = parser.parse(reader);
         JSONObject jsonObject = (JSONObject) obj;
@@ -56,7 +58,7 @@ public class WiseSayingRepository {
     }
 
     public void deleteDb(int input) {
-        File jsonFile = new File(directoryPath + input + ".json");
+        File jsonFile = new File(dbDirectoryPath + input + ".json");
         try (FileWriter fw = new FileWriter(jsonFile)) {
             obj.remove("id");
             obj.remove("content");
@@ -69,7 +71,7 @@ public class WiseSayingRepository {
     }
 
     public void modifyDb(WiseSaying wiseSaying) {
-        File jsonFile = new File(directoryPath + wiseSaying.getId() + ".json");
+        File jsonFile = new File(dbDirectoryPath + wiseSaying.getId() + ".json");
 
         try (FileWriter fw = new FileWriter(jsonFile)) {
             obj.put("id", wiseSaying.getId());
@@ -82,26 +84,47 @@ public class WiseSayingRepository {
         }
     }
 
-    public void buildJson(int lastId) {
-        File[] fileList = new File[lastId];
-        File dataFile = new File(directoryPath + "data.json");
-        try {
-            JSONParser parser = new JSONParser();
-            FileWriter fw = new FileWriter(dataFile);
-            JsonArray jsonArray = new JsonArray();
+    public void buildJson() {
+        // object mapper 객체 생성
+        ObjectMapper mapper = new ObjectMapper();
+        int length = getFileListFromDb().length;
+        JSONParser parser = new JSONParser();
+        List<WiseSaying> arr = new ArrayList<>();
+        File dataFile = new File(dataJsonDirectoryPath + "data.json");
 
-            for (int i = 0; i < lastId; i++) {
-                fileList[i] = new File(directoryPath + (i + 1) + ".json");
-                FileReader reader = new FileReader(fileList[i]);
+        try {
+            FileWriter fw = new FileWriter(dataFile);
+            for (int i = 0; i < length; i++) {
+                File jsonFile = new File(dbDirectoryPath + (i + 1) + ".json");
+                FileReader reader = new FileReader(jsonFile);
                 Object obj = parser.parse(reader);
                 JSONObject jsonObject = (JSONObject) obj;
-                jsonArray.add(jsonObject.toJSONString());
+
+                // json 문자열을 객체로 변환
+                wiseSaying = mapper.readValue(jsonObject.toJSONString(), WiseSaying.class);
+                // 객체를 arr 리스트에 추가
+                arr.add(wiseSaying);
             }
-            fw.write(jsonArray.toString());
+            // 모든 리스트를 json 문자열로 변환
+            String mergedJson = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(arr);
+            // 작성
+            fw.write(mergedJson);
             fw.flush();
-            fw.close();
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (IOException | ParseException e) {
+            throw new RuntimeException(e);
         }
+    }
+
+    public String[] getFileListFromDb() {
+        File dir = new File(dbDirectoryPath);
+
+        FilenameFilter filter = new FilenameFilter() {
+            public boolean accept(File dir, String name) {
+                return name.endsWith(".json");
+            }
+        };
+        String[] list = dir.list(filter);
+        return list;
+
     }
 }

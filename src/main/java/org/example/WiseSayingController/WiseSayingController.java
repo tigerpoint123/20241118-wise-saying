@@ -4,6 +4,7 @@ import org.example.WiseSaying.WiseSaying;
 import org.example.WiseSayingService.WiseSayingService;
 import org.json.simple.JSONObject;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Scanner;
 
@@ -20,28 +21,25 @@ public class WiseSayingController {
     }
 
     public void enroll(int i) {
-//        try {
-//            if(wiseSayingService.getLastId() > i) i = wiseSayingService.getLastId()+1;
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
         System.out.print("명언 : ");
         String speech = sc.nextLine();
 
         System.out.print("작가 : ");
         String author = sc.nextLine();
 
-        wiseSaying.setId(i+1); // i가 0부터니까
+        wiseSaying.setId(i + 1); // i가 0부터니까
         wiseSaying.setContent(speech);
         wiseSaying.setAuthor(author);
         wiseSayingService.enrollService(wiseSaying);
-        System.out.println(i + "번 명언이 등록되었습니다.");
+        System.out.println((i+1) + "번 명언이 등록되었습니다.");
     }
 
     public void showList() throws IOException {
         System.out.println("번호 / 명언 / 작가");
-        for (int i = 0; i < wiseSayingService.getLastId(); i++) {
-            JSONObject obj = wiseSayingService.getDataService(i+1);
+        String[] fileName = wiseSayingService.getFileName();
+
+        for (int i = 0; i < fileName.length; i++) {
+            JSONObject obj = wiseSayingService.getDataService(i + 1);
             System.out.println(obj.get("id") + " / " + obj.get("content") + " / " + obj.get("author"));
         }
     }
@@ -84,16 +82,12 @@ public class WiseSayingController {
     }
 
     public void build() {
-        try {
-            wiseSayingService.build(wiseSayingService.getLastId());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+            wiseSayingService.build();
     }
 
     public void saveLastId(int i) throws IOException {
 //        if (wiseSayingService.getLastId() < i) {
-            wiseSayingService.saveLastIdService(i);
+        wiseSayingService.saveLastIdService(i);
 //        }
     }
 }

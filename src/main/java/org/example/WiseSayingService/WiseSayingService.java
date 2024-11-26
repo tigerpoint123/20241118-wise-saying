@@ -31,8 +31,8 @@ public class WiseSayingService {
         wiseSayingRepository.modifyDb(wiseSaying);
     }
 
-    public void build(int lastId) {
-        wiseSayingRepository.buildJson(lastId);
+    public void build() {
+        wiseSayingRepository.buildJson();
     }
 
     public boolean isIdExist(int input) {
@@ -50,14 +50,16 @@ public class WiseSayingService {
     public JSONObject getDataService(int input) {
         try {
             return wiseSayingRepository.getDataFromDb(input);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (ParseException e) {
+        } catch (IOException | ParseException e) {
             throw new RuntimeException(e);
         }
     }
 
     public void saveLastIdService(int i) {
         wiseSayingRepository.saveLastIdRepository(i);
+    }
+
+    public String[] getFileName() {
+        return wiseSayingRepository.getFileListFromDb();
     }
 }
