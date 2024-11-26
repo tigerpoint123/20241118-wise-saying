@@ -1,4 +1,3 @@
-import org.example.WiseSaying.WiseSaying;
 import org.example.WiseSayingController.WiseSayingController;
 import org.junit.jupiter.api.*;
 
@@ -46,11 +45,15 @@ public class WiseSayingControllerTest {
     @Test
     void 목록테스트() {
         //given
+        String input = "목록?keywordType=author&keyword=작가";
+        String[] split = input.split("=|&"); // 1 ,3 인덱스에 있음.
+
+        scanner = TestUtil.genScanner(input);
         controller = new WiseSayingController(scanner);
 
         //when
         try {
-            controller.showList();
+            controller.showList(input);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -59,14 +62,14 @@ public class WiseSayingControllerTest {
     }
 
     @Test
-    void 삭제테스트() { // {"author":"작가 이름","id":1,"content":"명언 내용"}
+    void 삭제테스트() { // {"author":"작가11","id":1,"content":"명언11"}
         //given (준비)
-        String testInput = "1";
+        String testInput = "2";
         scanner = TestUtil.genScanner(testInput);
         controller = new WiseSayingController(scanner);
 
         //then (실행)
-        controller.delete("삭제?id="+1);
+        controller.delete("삭제?id="+testInput);
         System.setIn(System.in);
 
         //when(검증)
@@ -90,12 +93,6 @@ public class WiseSayingControllerTest {
 
         //when(검증)
         Assertions.assertTrue(outContent.toString().trim().contains("명언이 수정되었습니다"));
-    }
-
-    @Test
-    void 검색테스트() {
-        // given
-        String input = "목록?keywordType=content&keyword=과거";
     }
 
     @Test

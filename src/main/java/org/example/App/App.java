@@ -28,7 +28,7 @@ public class App {
                     i++;
                     break;
                 case "목록":
-                    controller.showList();
+                    controller.showList(order);
                     break;
                 case "삭제?id=":
                     controller.delete(order);

@@ -4,7 +4,6 @@ import org.example.WiseSaying.WiseSaying;
 import org.example.WiseSayingService.WiseSayingService;
 import org.json.simple.JSONObject;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Scanner;
 
@@ -34,8 +33,9 @@ public class WiseSayingController {
         System.out.println((i+1) + "번 명언이 등록되었습니다.");
     }
 
-    public void showList() throws IOException {
+    public void showList(String order) throws IOException {
         System.out.println("번호 / 명언 / 작가");
+        System.out.println(order);
         String[] fileName = wiseSayingService.getFileName();
 
         for (int i = 0; i < fileName.length; i++) {
