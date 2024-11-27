@@ -1,5 +1,9 @@
 package org.example.WiseSaying;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+
 //명언 객체(번호/명언내용/작가). mvc 모두 사용가능
 public class WiseSaying {
     private String author;

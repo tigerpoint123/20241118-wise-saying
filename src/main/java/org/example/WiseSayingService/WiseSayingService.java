@@ -1,5 +1,7 @@
 package org.example.WiseSayingService;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import org.example.WiseSaying.WiseSaying;
@@ -29,18 +31,6 @@ public class WiseSayingService {
 
     public void build() {
         wiseSayingRepository.buildJson();
-    }
-
-    public boolean isIdExist(int input) {
-        try {
-            if (wiseSayingRepository.getLastId() - 48 < input || input == -1) { // 입력한게 db에 없음.
-                return false;
-            } else {
-                return true;
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     public JSONObject getDataService(int input) {

@@ -6,4 +6,36 @@
   "author" : "작가22",
   "content" : "명언22",
   "id" : 2
+}, {
+  "author" : "작가3",
+  "content" : "명언3",
+  "id" : 3
+}, {
+  "author" : "작가4",
+  "content" : "명언4",
+  "id" : 4
+}, {
+  "author" : "작가테스트",
+  "content" : "명언테스트",
+  "id" : 5
+}, {
+  "author" : "666",
+  "content" : "666",
+  "id" : 6
+}, {
+  "author" : "명언6",
+  "content" : "작자미상6",
+  "id" : 7
+}, {
+  "author" : "명언7",
+  "content" : "작자미상7",
+  "id" : 8
+}, {
+  "author" : "명언8",
+  "content" : "작자미상8",
+  "id" : 9
+}, {
+  "author" : "명언9",
+  "content" : "작자미상9",
+  "id" : 10
 } ]

@@ -5,6 +5,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Scanner;
 
+import static org.junit.Assert.*;
+
 //https://brunch.co.kr/@springboot/292
 public class WiseSayingControllerTest {
     private ByteArrayOutputStream outContent;
@@ -24,22 +26,21 @@ public class WiseSayingControllerTest {
     @Test
     @DisplayName("등록테스트")
     void 등록테스트() throws IOException {
-        // given
-        String testInput = """
-                명언테스트
-                작가테스트
-                """;
-        scanner = TestUtil.genScanner(testInput);
+        for (int i = 6; i < 10; i++) {
+            // given
+            String testInput = "작자미상"+i+"\n명언"+i;
+            scanner = TestUtil.genScanner(testInput);
 
-        // 테스트 객체 생성
-        controller = new WiseSayingController(scanner);
 
-        // when
-        controller.enroll(4); //번호
-//        controller.saveLastId(1);
+            // 테스트 객체 생성
+            controller = new WiseSayingController(scanner);
 
-        // then
-        Assertions.assertTrue(outContent.toString().contains("명언이 등록되었습니다"));
+            // when
+            controller.enroll(i); // 가장 큰 json 파일 번호 쓰면 됨.
+
+            // then
+            assertTrue(outContent.toString().contains("명언이 등록되었습니다"));
+        }
     }
 
     @Test
@@ -58,7 +59,7 @@ public class WiseSayingControllerTest {
             throw new RuntimeException(e);
         }
         //then
-        Assertions.assertTrue(outContent.toString().contains("1 / 명언테스트 / 작가테스트"));
+        assertTrue(outContent.toString().contains("1 / 명언테스트 / 작가테스트"));
     }
 
     @Test
@@ -69,11 +70,11 @@ public class WiseSayingControllerTest {
         controller = new WiseSayingController(scanner);
 
         //then (실행)
-        controller.delete("삭제?id="+testInput);
+        controller.delete("삭제?id=" + testInput);
         System.setIn(System.in);
 
         //when(검증)
-        Assertions.assertTrue(outContent.toString().trim().contains("명언이 삭제되었습니다"));
+        assertTrue(outContent.toString().trim().contains("명언이 삭제되었습니다"));
     }
 
     @Test
@@ -88,11 +89,11 @@ public class WiseSayingControllerTest {
         controller = new WiseSayingController(scanner);
 
         //then (실행)
-        controller.modify("수정?id="+1);
+        controller.modify("수정?id=" + 1);
         System.setIn(System.in);
 
         //when(검증)
-        Assertions.assertTrue(outContent.toString().trim().contains("명언이 수정되었습니다"));
+        assertTrue(outContent.toString().trim().contains("명언이 수정되었습니다"));
     }
 
     @Test

@@ -50,12 +50,6 @@ public class WiseSayingRepository {
         return jsonObject;
     }
 
-    public int getLastId() throws IOException {
-        FileReader reader = new FileReader(txtFile);
-        int id = (char) reader.read();
-        return id;
-    }
-
     public void deleteDb(int input) {
         File jsonFile = new File(dbDirectoryPath + input + ".json");
         try (FileWriter fw = new FileWriter(jsonFile)) {
@@ -134,8 +128,8 @@ public class WiseSayingRepository {
         List<WiseSaying> arr = new ArrayList<>();
         String mergedJson;
         try {
-            for (int i = 0; i < length; i++) {
-                File jsonFile = new File(dbDirectoryPath + (i + 1) + ".json");
+            for (int i = length; i > 0; i--) {
+                File jsonFile = new File(dbDirectoryPath + i + ".json");
                 FileReader reader = new FileReader(jsonFile);
                 Object obj = parser.parse(reader);
                 JSONObject jsonObject = (JSONObject) obj;
