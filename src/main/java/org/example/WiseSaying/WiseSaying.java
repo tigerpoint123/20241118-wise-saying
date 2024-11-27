@@ -5,10 +5,13 @@ import lombok.Getter;
 import lombok.Setter;
 
 //명언 객체(번호/명언내용/작가). mvc 모두 사용가능
+//@Getter
+//@Setter
+//@AllArgsConstructor
 public class WiseSaying {
+    private Integer id;
     private String author;
     private String content;
-    private Integer id;
 
     public String getAuthor() {
         return author;

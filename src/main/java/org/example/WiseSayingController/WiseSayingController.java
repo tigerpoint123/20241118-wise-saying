@@ -12,27 +12,27 @@ import java.util.Scanner;
 //고객의 명령을 입력받고 적절한 응답을 표현. 여기서 출력 스캐너 사용가능
 public class WiseSayingController {
     private final WiseSayingService wiseSayingService;
-    private final Scanner sc;
     private final WiseSaying wiseSaying;
+    private final Scanner sc;
 
     public WiseSayingController(Scanner scanner) {
+        this.wiseSaying = new WiseSaying();
         this.wiseSayingService = new WiseSayingService();
         this.sc = scanner;
-        this.wiseSaying = new WiseSaying();
     }
 
     public void enroll(int i) {
         System.out.print("명언 : ");
-        String speech = sc.nextLine();
+        String content = sc.nextLine();
 
         System.out.print("작가 : ");
         String author = sc.nextLine();
 
         i = wiseSayingService.getFileName().length;
 
-        wiseSaying.setId(i + 1); // i가 0부터니까
-        wiseSaying.setContent(speech);
         wiseSaying.setAuthor(author);
+        wiseSaying.setContent(content);
+        wiseSaying.setId(i + 1);
 
         wiseSayingService.enrollService(wiseSaying);
         wiseSayingService.saveLastIdService(i + 1);
@@ -40,21 +40,17 @@ public class WiseSayingController {
         System.out.println((i + 1) + "번 명언이 등록되었습니다.");
     }
 
-    //이 단계부터는 목록명령어에서 모든 명언을 볼 수 없고 페이징 된다.
-    //샘플 데이터 명언 10개 생성
-    //한 페이지에 최대 5개의 명언이 노출
-    //페이지 번호를 생략하면 1 페이지로 간주합니다.
-    //최신글이 우선적으로 나와야 합니다.
-    //검색어를 적용하면 그것을 반영한 페이징이 되어야 합니다.
+    // 코드는 더럽지만 잘 돌아가는
     public void showList(String order) throws IOException {
         String[] fileName = wiseSayingService.getFileName();
-        String[] split = order.split("[=&?]"); //  (예시임)  목록?keywordType=content&keyword=작자
+        String[] split = order.split("[=&?]"); //  (예시임)  목록?keywordType=content&keyword=명언
+        List<WiseSaying> list;
+        ObjectMapper mapper = new ObjectMapper();
 
         int pageSize = 5; // 한 페이지에 보여줄 데이터 건수
-        int currentPage; //현재 보고있는 페이지
-        int totalData = fileName.length; // 총 데이터 개수 = 10
+        int totalData = fileName.length; // 총 데이터 개수 = 10 (만약 11개라면)
 
-        if (order.contains("?") && split[1].contains("keyword")) { // 검색이  있을때
+        if (order.contains("keyword")) { // 검색일때
             System.out.println("---------------------------");
             String keywordType = split[2];
             System.out.println("검색타입 : " + keywordType);
@@ -65,28 +61,40 @@ public class WiseSayingController {
             System.out.println("---------------------------");
 
             String str = wiseSayingService.searchService(keyword, keywordType);
-            ObjectMapper mapper = new ObjectMapper();
 
             // json 문자열을 list<wisesaying> 객체로 변환
-            List<WiseSaying> list = mapper.readValue(str, mapper.getTypeFactory().constructCollectionType(List.class, WiseSaying.class));
+            list = mapper.readValue(str, mapper.getTypeFactory().constructCollectionType(List.class, WiseSaying.class));
 
-            for (int i = 0; i < list.size(); i++) {
+            for (int i = 0; i < pageSize; i++) { // 이게 왜 내림차순으로 되지
                 System.out.println(list.get(i).getId() + " / " + list.get(i).getContent() + " / " + list.get(i).getAuthor());
             }
-
-        }else { // 검색이랑 페이지번호 없을때
+        } else if (order.contains("page")) { // 페이지번호일때  / 목록?page=2
+            int searchPage = Integer.parseInt(split[2]);
             System.out.println("번호 / 명언 / 작가");
             System.out.println("---------------------------");
 
-            currentPage = 1;
+            // 전체 데이터가 11개일 때
+
+            // 첫 페이지는 11부터 7 / 2페이지는 6부터 2 / 3페이지는 1
+
+            // 그래서 i에 전체 개수 (11) 에서 (2페이지라 가정했을때) 11 - ( 2 - 1 ) * 5 를 해야 6부터 조회 가능.
+
+            // 그 다음 6에서 i 가 > 1 해야하는데, 전체 11 - 한 페이지의 데이터 개수 5 * 현재 페이지 2 // 11 - 5 * 2 해서 1이 나옴.
+
+            // 간단해 보이는걸 복잡하게 하는 재주
+            for (int i = totalData - (searchPage - 1) * pageSize; i > totalData - pageSize * searchPage; i--) { // 이걸 어떻게 생각한거지
+                if (i == 0) break;
+                JSONObject obj = wiseSayingService.getDataService(i);
+                System.out.println(obj.get("id") + " / " + obj.get("content") + " / " + obj.get("author"));
+            }
+
+        } else {
             for (int i = totalData; i > totalData - pageSize; i--) {
                 JSONObject obj = wiseSayingService.getDataService(i);
                 System.out.println(obj.get("id") + " / " + obj.get("content") + " / " + obj.get("author"));
             }
-            System.out.println("---------------------------");
-
-            System.out.println("페이지 : [" + (currentPage) + "] / " + (totalData / pageSize));
         }
+        System.out.println("---------------------------");
     }
 
     public void delete(String order) {
@@ -114,9 +122,9 @@ public class WiseSayingController {
                 System.out.print("작가(수정) : ");
                 String newAuthor = sc.nextLine();
 
+                wiseSaying.setId(input);
                 wiseSaying.setAuthor(newAuthor);
                 wiseSaying.setContent(newContent);
-                wiseSaying.setId(input);
 
                 wiseSayingService.modifyService(wiseSaying);
                 System.out.println(input + "번 명언이 수정되었습니다.");

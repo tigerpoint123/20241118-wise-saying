@@ -1,7 +1,5 @@
 package org.example.WiseSayingService;
 
-import lombok.Getter;
-import lombok.Setter;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import org.example.WiseSaying.WiseSaying;
