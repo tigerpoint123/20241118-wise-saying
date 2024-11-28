@@ -14,6 +14,9 @@ public class WiseSayingController {
     private final WiseSayingService wiseSayingService;
     private final WiseSaying wiseSaying;
     private final Scanner sc;
+    private final int pageSize = 5; // 한 페이지에 보여줄 데이터 건수
+    private final int currentPage = 1; // 기본값
+    private int totalPage = 0; // 기본값
 
     public WiseSayingController(Scanner scanner) {
         this.wiseSaying = new WiseSaying();
@@ -46,9 +49,7 @@ public class WiseSayingController {
         String[] split = order.split("[=&?]"); //  (예시임)  목록?keywordType=content&keyword=명언
         List<WiseSaying> list;
         ObjectMapper mapper = new ObjectMapper();
-
-        int pageSize = 5; // 한 페이지에 보여줄 데이터 건수
-        int totalData = fileName.length; // 총 데이터 개수 = 10 (만약 11개라면)
+        int totalData = fileName.length; // 총 데이터 개수 = 10 (만약 11개라면 ?)
 
         if (order.contains("keyword")) { // 검색일때
             System.out.println("---------------------------");
@@ -68,6 +69,8 @@ public class WiseSayingController {
             for (int i = 0; i < pageSize; i++) { // 이게 왜 내림차순으로 되지
                 System.out.println(list.get(i).getId() + " / " + list.get(i).getContent() + " / " + list.get(i).getAuthor());
             }
+            paging(list.size(), currentPage);
+
         } else if (order.contains("page")) { // 페이지번호일때  / 목록?page=2
             int searchPage = Integer.parseInt(split[2]);
             System.out.println("번호 / 명언 / 작가");
@@ -81,20 +84,37 @@ public class WiseSayingController {
 
             // 그 다음 6에서 i 가 > 1 해야하는데, 전체 11 - 한 페이지의 데이터 개수 5 * 현재 페이지 2 // 11 - 5 * 2 해서 1이 나옴.
 
-            // 간단해 보이는걸 복잡하게 하는 재주
+            // 이해 못할거같은 미래의 김호남
             for (int i = totalData - (searchPage - 1) * pageSize; i > totalData - pageSize * searchPage; i--) { // 이걸 어떻게 생각한거지
                 if (i == 0) break;
                 JSONObject obj = wiseSayingService.getDataService(i);
                 System.out.println(obj.get("id") + " / " + obj.get("content") + " / " + obj.get("author"));
             }
+            paging(totalData, searchPage);
 
         } else {
             for (int i = totalData; i > totalData - pageSize; i--) {
                 JSONObject obj = wiseSayingService.getDataService(i);
                 System.out.println(obj.get("id") + " / " + obj.get("content") + " / " + obj.get("author"));
             }
+            System.out.println("---------------------------");
+
+            paging(totalData, currentPage);
         }
-        System.out.println("---------------------------");
+    }
+
+    private void paging(int totalData, int currentPage) {
+        if (totalData % pageSize == 0) totalPage = totalData / pageSize;
+        else totalPage = totalData / pageSize + 1;
+
+        System.out.print("페이지 : ");
+        for (int i = 1; i <= totalPage; i++) {
+            if (i == currentPage) System.out.print("[" + i + "]");
+            else System.out.print(i);
+            if (i != totalPage) System.out.print(" / ");
+            else System.out.println();
+        }
+
     }
 
     public void delete(String order) {
