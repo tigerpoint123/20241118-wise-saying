@@ -43,13 +43,11 @@ public class WiseSayingController {
         System.out.println((i + 1) + "번 명언이 등록되었습니다.");
     }
 
-    // 코드는 더럽지만 잘 돌아가는
     public void showList(String order) throws IOException {
-        String[] fileName = wiseSayingService.getFileName();
         String[] split = order.split("[=&?]"); //  (예시임)  목록?keywordType=content&keyword=명언
         List<WiseSaying> list;
         ObjectMapper mapper = new ObjectMapper();
-        int totalData = fileName.length; // 총 데이터 개수 = 10 (만약 11개라면 ?)
+        int totalData = getFileName().length; // 총 데이터 개수 = 10 (만약 11개라면 ?)
 
         if (order.contains("keyword")) { // 검색일때
             System.out.println("---------------------------");
@@ -66,7 +64,7 @@ public class WiseSayingController {
             // json 문자열을 list<wisesaying> 객체로 변환
             list = mapper.readValue(str, mapper.getTypeFactory().constructCollectionType(List.class, WiseSaying.class));
 
-            for (int i = 0; i < pageSize; i++) { // 이게 왜 내림차순으로 되지
+            for (int i = 0; i < pageSize; i++) { // searchService 로 실행하는 repository 함수가 가장 큰 id부터 찾아옴.
                 System.out.println(list.get(i).getId() + " / " + list.get(i).getContent() + " / " + list.get(i).getAuthor());
             }
             paging(list.size(), currentPage);
@@ -77,16 +75,11 @@ public class WiseSayingController {
             System.out.println("---------------------------");
 
             // 전체 데이터가 11개일 때
-
             // 첫 페이지는 11부터 7 / 2페이지는 6부터 2 / 3페이지는 1
-
             // 그래서 i에 전체 개수 (11) 에서 (2페이지라 가정했을때) 11 - ( 2 - 1 ) * 5 를 해야 6부터 조회 가능.
-
             // 그 다음 6에서 i 가 > 1 해야하는데, 전체 11 - 한 페이지의 데이터 개수 5 * 현재 페이지 2 // 11 - 5 * 2 해서 1이 나옴.
-
-            // 이해 못할거같은 미래의 김호남
             for (int i = totalData - (searchPage - 1) * pageSize; i > totalData - pageSize * searchPage; i--) { // 이걸 어떻게 생각한거지
-                if (i == 0) break;
+                if (i == 0) break; // 이래야 5개가 없는 페이지는 1번 데이터 불러오고 끝.
                 JSONObject obj = wiseSayingService.getDataService(i);
                 System.out.println(obj.get("id") + " / " + obj.get("content") + " / " + obj.get("author"));
             }
@@ -114,14 +107,12 @@ public class WiseSayingController {
             if (i != totalPage) System.out.print(" / ");
             else System.out.println();
         }
-
     }
 
     public void delete(String order) {
-        String[] fileName = wiseSayingService.getFileName();
         int input = Integer.parseInt(order.split("=")[1]); // 삭제할려는 id
 
-        if (fileName.length > 0) {
+        if (getFileName().length > 0) {
             wiseSayingService.deleteService(input);
             System.out.println(input + "번 명언이 삭제되었습니다.");
         } else {
@@ -131,10 +122,9 @@ public class WiseSayingController {
 
     public void modify(String order) {
         int input = Integer.parseInt(order.split("=")[1]);
-        String[] fileName = wiseSayingService.getFileName();
 
         try {
-            if (fileName.length > 0) {
+            if (getFileName().length > 0) {
                 System.out.println("명언(기존) : " + wiseSayingService.getDataService(input).get("content").toString());
                 System.out.print("명언(수정) : ");
                 String newContent = sc.nextLine();
@@ -158,5 +148,9 @@ public class WiseSayingController {
 
     public void build() {
         wiseSayingService.build();
+    }
+
+    private String[] getFileName() {
+        return wiseSayingService.getFileName();
     }
 }

@@ -1,11 +1,13 @@
+import org.assertj.core.api.Assertions;
 import org.example.WiseSayingController.WiseSayingController;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Scanner;
-
-import static org.junit.Assert.*;
 
 //https://brunch.co.kr/@springboot/292
 public class WiseSayingControllerTest {
@@ -28,18 +30,15 @@ public class WiseSayingControllerTest {
     void 등록테스트() throws IOException {
         for (int i = 6; i < 10; i++) {
             // given
-            String testInput = "작자미상"+i+"\n명언"+i;
+            String testInput = "명언" + i + "\n작가" + i;
             scanner = TestUtil.genScanner(testInput);
-
-
-            // 테스트 객체 생성
             controller = new WiseSayingController(scanner);
 
             // when
             controller.enroll(i); // 가장 큰 json 파일 번호 쓰면 됨.
 
             // then
-            assertTrue(outContent.toString().contains("명언이 등록되었습니다"));
+            Assertions.assertThat(outContent.toString().trim()).contains("명언이 등록되었습니다");
         }
     }
 
@@ -59,22 +58,23 @@ public class WiseSayingControllerTest {
             throw new RuntimeException(e);
         }
         //then
-        assertTrue(outContent.toString().contains("1 / 명언테스트 / 작가테스트"));
+        Assertions.assertThat(outContent.toString().trim()).contains("1 / 명언테스트 / 작가테스트");
     }
 
     @Test
     void 삭제테스트() { // {"author":"작가11","id":1,"content":"명언11"}
         //given (준비)
-        String testInput = "2";
+        String testInput = "삭제?id=2";
         scanner = TestUtil.genScanner(testInput);
         controller = new WiseSayingController(scanner);
 
         //then (실행)
-        controller.delete("삭제?id=" + testInput);
+        controller.delete(testInput);
         System.setIn(System.in);
 
         //when(검증)
-        assertTrue(outContent.toString().trim().contains("명언이 삭제되었습니다"));
+        Assertions.assertThat(outContent.toString().trim()).contains("명언이 삭제되었습니다");
+
     }
 
     @Test
@@ -93,7 +93,7 @@ public class WiseSayingControllerTest {
         System.setIn(System.in);
 
         //when(검증)
-        assertTrue(outContent.toString().trim().contains("명언이 수정되었습니다"));
+        Assertions.assertThat(outContent.toString().trim()).contains("명언이 수정되었습니다");
     }
 
     @Test
@@ -102,8 +102,4 @@ public class WiseSayingControllerTest {
         controller.build();
     }
 
-    @Test
-    void 통합앱스트() {
-
-    }
 }
