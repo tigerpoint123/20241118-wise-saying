@@ -36,7 +36,6 @@ public class WiseSayingController {
         wiseSaying.setAuthor(author);
         wiseSaying.setContent(content);
         wiseSaying.setId(i + 1);
-
         wiseSayingService.enrollService(wiseSaying);
         wiseSayingService.saveLastIdService(i + 1);
 
