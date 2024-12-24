@@ -141,6 +141,7 @@ public class WiseSayingController {
             } else {
                 System.out.println(input + "번 명언이 존재하지 않습니다.");
             }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
