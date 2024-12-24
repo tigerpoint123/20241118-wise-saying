@@ -121,9 +121,11 @@ public class WiseSayingController {
     }
 
     public void modify(String order) {
+
         int input = Integer.parseInt(order.split("=")[1]);
 
         try {
+
             if (getFileName().length > 0) {
                 System.out.println("명언(기존) : " + wiseSayingService.getDataService(input).get("content").toString());
                 System.out.print("명언(수정) : ");
@@ -141,6 +143,7 @@ public class WiseSayingController {
             } else {
                 System.out.println(input + "번 명언이 존재하지 않습니다.");
             }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
