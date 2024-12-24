@@ -58,7 +58,6 @@ public class WiseSayingController {
             System.out.println("---------------------------");
             System.out.println("번호 / 명언 / 작가");
             System.out.println("---------------------------");
-
             String str = wiseSayingService.searchService(keyword, keywordType);
 
             // json 문자열을 list<wisesaying> 객체로 변환
