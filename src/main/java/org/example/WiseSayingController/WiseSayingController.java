@@ -121,6 +121,7 @@ public class WiseSayingController {
     }
 
     public void modify(String order) {
+
         int input = Integer.parseInt(order.split("=")[1]);
 
         try {
