@@ -27,10 +27,8 @@ public class WiseSayingController {
     public void enroll(int i) {
         System.out.print("명언 : ");
         String content = sc.nextLine();
-
         System.out.print("작가 : ");
         String author = sc.nextLine();
-
         i = wiseSayingService.getFileName().length;
 
         wiseSaying.setAuthor(author);
@@ -38,7 +36,6 @@ public class WiseSayingController {
         wiseSaying.setId(i + 1);
         wiseSayingService.enrollService(wiseSaying);
         wiseSayingService.saveLastIdService(i + 1);
-
         System.out.println((i + 1) + "번 명언이 등록되었습니다.");
     }
 
@@ -121,7 +118,6 @@ public class WiseSayingController {
 
     public void modify(String order) {
         int input = Integer.parseInt(order.split("=")[1]);
-
         try {
             if (getFileName().length > 0) {
                 System.out.println("명언(기존) : " + wiseSayingService.getDataService(input).get("content").toString());
