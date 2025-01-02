@@ -56,7 +56,6 @@ public class WiseSayingController {
             System.out.println("---------------------------");
 
             String str = wiseSayingService.searchService(keyword, keywordType);
-
             // json 문자열을 list<wisesaying> 객체로 변환
             list = mapper.readValue(str, mapper.getTypeFactory().constructCollectionType(List.class, WiseSaying.class));
 
