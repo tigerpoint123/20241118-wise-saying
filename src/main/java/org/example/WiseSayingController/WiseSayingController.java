@@ -89,7 +89,6 @@ public class WiseSayingController {
                 System.out.println(obj.get("id") + " / " + obj.get("content") + " / " + obj.get("author"));
             }
             System.out.println("---------------------------");
-
             paging(totalData, currentPage);
         }
     }
