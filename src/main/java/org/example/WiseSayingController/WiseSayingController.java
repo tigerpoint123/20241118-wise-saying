@@ -118,7 +118,6 @@ public class WiseSayingController {
 
     public void modify(String order) {
         int input = Integer.parseInt(order.split("=")[1]);
-
         try {
             if (getFileName().length > 0) {
                 System.out.println("명언(기존) : " + wiseSayingService.getDataService(input).get("content").toString());
