@@ -27,10 +27,8 @@ public class WiseSayingController {
     public void enroll(int i) {
         System.out.print("명언 : ");
         String content = sc.nextLine();
-
         System.out.print("작가 : ");
         String author = sc.nextLine();
-
         i = wiseSayingService.getFileName().length;
 
         wiseSaying.setAuthor(author);
