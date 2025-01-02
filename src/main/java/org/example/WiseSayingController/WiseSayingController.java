@@ -38,7 +38,6 @@ public class WiseSayingController {
         wiseSaying.setId(i + 1);
         wiseSayingService.enrollService(wiseSaying);
         wiseSayingService.saveLastIdService(i + 1);
-
         System.out.println((i + 1) + "번 명언이 등록되었습니다.");
     }
 
