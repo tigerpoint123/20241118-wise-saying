@@ -57,7 +57,6 @@ public class WiseSayingController {
             System.out.println("---------------------------");
             System.out.println("번호 / 명언 / 작가");
             System.out.println("---------------------------");
-
             String str = wiseSayingService.searchService(keyword, keywordType);
 
             // json 문자열을 list<wisesaying> 객체로 변환
@@ -90,7 +89,6 @@ public class WiseSayingController {
                 System.out.println(obj.get("id") + " / " + obj.get("content") + " / " + obj.get("author"));
             }
             System.out.println("---------------------------");
-
             paging(totalData, currentPage);
         }
     }
@@ -120,9 +118,11 @@ public class WiseSayingController {
     }
 
     public void modify(String order) {
+
         int input = Integer.parseInt(order.split("=")[1]);
 
         try {
+
             if (getFileName().length > 0) {
                 System.out.println("명언(기존) : " + wiseSayingService.getDataService(input).get("content").toString());
                 System.out.print("명언(수정) : ");
@@ -140,6 +140,7 @@ public class WiseSayingController {
             } else {
                 System.out.println(input + "번 명언이 존재하지 않습니다.");
             }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
